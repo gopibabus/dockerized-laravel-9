@@ -3,7 +3,7 @@
 
 ## Installation
 
-Use [docker](https://www.docker.com/products/docker-desktop/) to run health-tracker on your machine.
+Use [docker](https://www.docker.com/products/docker-desktop/) to run app on your machine.
 
 ```bash
 # customize .env according to your requirement
