@@ -1,4 +1,4 @@
-![Health Tracker](resources/images/readme-banner.png)
+# Dockerized Laravel Application
 
 Health Tracker is a php application for monitoring health of all web based applications in Organization.
 
