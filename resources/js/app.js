@@ -1,6 +1,16 @@
 require('./bootstrap');
 
-import {createApp} from 'vue';
+import {createApp, ref} from 'vue';
+import {Quasar} from  'quasar';
+import 'quasar/dist/quasar.sass';
 import App from './components/App.vue';
 
-createApp(App).mount('#app');
+const app = createApp(App, {
+    setup () {
+        return {
+            persistent: ref(false)
+        }
+    }
+});
+app.use(Quasar,{ config: {} });
+app.mount('#app');
