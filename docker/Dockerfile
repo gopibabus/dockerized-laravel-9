@@ -42,6 +42,12 @@ RUN chmod +x /usr/local/bin/confd \
     && chmod +x /usr/local/bin/composer \
     && composer --version
 
+# https://github.com/nodesource/distributions/blob/master/README.md#debinstall
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
+    && apt-get install -y nodejs \
+    && node --version \
+    && npm --version
+
 # Caching Composer Dependencies
 WORKDIR /tmp
 COPY composer.json composer.lock auth.json /tmp/
@@ -63,7 +69,10 @@ RUN composer install \
     --no-scripts \
     --prefer-dist
 
+RUN npm install
+
 RUN chown -R www-data:www-data /var/www/html
+RUN chmod -R 777 storage bootstrap
 
 EXPOSE 80
 

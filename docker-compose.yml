@@ -1,91 +1,78 @@
 version: "3"
-networks:
-  app-tier:
-    driver: bridge
 
 services:
   app:
-    image: laravel-www
-    container_name: laravel-www
+    image: health-tracker-app
+    container_name: health-tracker-app
     build:
       context: .
       dockerfile: docker/Dockerfile
     depends_on:
       - redis
-      - mysql
+      - mariadb
     env_file:
       - .docker.env
     volumes:
       - .:/var/www/html
-    networks:
-      - app-tier
     ports:
-      - "8090:80"
+      - "80:80"
     environment:
       APP_ENV: local
       CONTAINER_ROLE: app
 
   scheduler:
-    image: laravel-www
-    container_name: laravel-scheduler
+    image: health-tracker-app
+    container_name: health-tracker-scheduler
     depends_on:
       - app
       - redis
-      - mysql
+      - mariadb
     env_file:
       - .docker.env
     volumes:
       - .:/var/www/html
-    networks:
-      - app-tier
     environment:
       CONTAINER_ROLE: scheduler
       APP_ENV: local
 
   queue:
-    image: laravel-www
-    container_name: laravel-queue
+    image: health-tracker-app
+    container_name: health-tracker-queue
     depends_on:
       - app
       - redis
-      - mysql
+      - mariadb
     env_file:
       - .docker.env
     volumes:
       - .:/var/www/html
-    networks:
-      - app-tier
     environment:
       CONTAINER_ROLE: queue
       APP_ENV: local
 
   redis:
-    container_name: laravel-redis
+    container_name: health-tracker-redis
     image: redis:6-alpine
-    networks:
-      - app-tier
     ports:
       - "${REDIS_PORT}:6379"
     volumes:
       - redis:/data
 
-  mysql:
-    container_name: laravel-mysql
-    image: mysql:8.0
-    networks:
-      - app-tier
+  mariadb:
+    container_name: health-tracker-mariadb
+    image: mariadb:10.7
     ports:
       - "${DB_PORT}:3306"
     volumes:
-      - mysql:/var/lib/mysql
+      - mariadb:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
+        MARIADB_DATABASE: ${DB_DATABASE}
+        MARIADB_ROOT_PASSWORD : ${DB_ROOT_PASSWORD}
+        MARIADB_USER: ${DB_USERNAME}
+        MARIADB_PASSWORD : ${DB_PASSWORD}
 
 volumes:
   redis:
     driver: "local"
-  mysql:
+  mariadb:
     driver: "local"
